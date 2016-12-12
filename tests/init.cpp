@@ -3,38 +3,35 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <chrono>
+#include <locale> 
 using namespace std;
  
-SCENARIO("32mb", "[32mb]"){
- bool p=true;
-std::chrono::time_point<std::chrono::system_clock> start, end;
-	start = std::chrono::system_clock::now();
- B obj("32","out",17);
- end = std::chrono::system_clock::now();
-	cout <<"32MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
- 
-  REQUIRE(p==true);
-}
+SCENARIO("count111", "[count1111]"){
+ setlocale(LC_ALL, "Russian");
+ B obj("name.txt",1048576);
+ ifstream hay("out.txt");
+ifstream file("sort.txt");
 
-SCENARIO("15mb", "[15mb]"){
+int i=0;
  bool p=true;
-std::chrono::time_point<std::chrono::system_clock> start, end;
-	start = std::chrono::system_clock::now();
-B obj("15","out2",4);
- end = std::chrono::system_clock::now();
-	cout <<"15MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
- 
-  REQUIRE(p==true);
-}
+ string s1,s2;
+ while (!hay.eof()&&!file.eof()){
+getline(file,s1);
+ getline(hay,s2);
 
-SCENARIO("8mb", "[8mb]"){
-bool p=true;
-std::chrono::time_point<std::chrono::system_clock> start, end;
-	start = std::chrono::system_clock::now();
-  B obj("8","out8",1);
- end = std::chrono::system_clock::now();
-	cout <<"8MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
+  i++;
+  if (s1!=s2){
+  p=false;
+   cout<<i<<endl;
+   cout<<s1<<endl;
+   cout<<s2<<endl;
+   break;
+  }
+ }
+  file.close();
+ hay.close();
  
+ 
+
   REQUIRE(p==true);
 }
