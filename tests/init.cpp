@@ -3,83 +3,38 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <locale> 
+#include <chrono>
 using namespace std;
  
 SCENARIO("32mb", "[32mb]"){
- setlocale(LC_ALL, "Russian");
- B obj("32.txt","out",17);
- ifstream hay("out");
-ifstream file("sort.txt");
-
-int i=0;
  bool p=true;
- string s1,s2;
- while (!hay.eof()&&!file.eof()){
-getline(file,s1);
- getline(hay,s2);
-  i++;
-  if (s1!=s2){
-  p=false;
-   cout<<i<<endl;
-   cout<<s1<<endl;
-   cout<<s2<<endl;
-   break;
-  }
- }
-  file.close();
- hay.close();
+std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+ B obj("32","out",17);
+ end = std::chrono::system_clock::now();
+	cout <<"32MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
+ 
   REQUIRE(p==true);
 }
 
 SCENARIO("15mb", "[15mb]"){
- setlocale(LC_ALL, "Russian");
- B obj("15.txt","out2",4);
- ifstream hay("out2");
-ifstream file("sort3");
-
-int i=0;
  bool p=true;
- string s1,s2;
- while (!hay.eof()&&!file.eof()){
-getline(file,s1);
- getline(hay,s2);
-  i++;
-  if (s1!=s2){
-  p=false;
-   cout<<i<<endl;
-   cout<<s1<<endl;
-   cout<<s2<<endl;
-   break;
-  }
- }
-  file.close();
- hay.close();
+std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+B obj("15","out2",4);
+ end = std::chrono::system_clock::now();
+	cout <<"15MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
+ 
   REQUIRE(p==true);
 }
 
 SCENARIO("8mb", "[8mb]"){
- setlocale(LC_ALL, "Russian");
- B obj("8.txt","out3",1);
- ifstream hay("out3");
-ifstream file("sort2");
-
-int i=0;
- bool p=true;
- string s1,s2;
- while (!hay.eof()&&!file.eof()){
-getline(file,s1);
- getline(hay,s2);
-  i++;
-  if (s1!=s2){
-  p=false;
-   cout<<i<<endl;
-   cout<<s1<<endl;
-   cout<<s2<<endl;
-   break;
-  }
- }
-  file.close();
- hay.close();
+bool p=true;
+std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+  B obj("8","out8",1);
+ end = std::chrono::system_clock::now();
+	cout <<"8MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
+ 
   REQUIRE(p==true);
 }
