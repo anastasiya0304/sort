@@ -65,7 +65,7 @@ private:
 	size_t count_of_files;
 	vector<string> file_names;
 	vector<person> pers;
-	//uint_fast64_t buffer;
+	uint_fast64_t buffer;
 };
 
 
