@@ -75,7 +75,7 @@ inline Sort::~Sort()
 	//file_names.clear();
 }
 
-inline Sort::Sort(string name_main_file, string out_file, size_t buff_size) :s_in(name_main_file), s_out(out_file), count_of_files(0), buffer(buff_size * 1024 * 1024*0.8) {
+inline Sort::Sort(string name_main_file, string out_file, size_t buff_size) :s_in(name_main_file), s_out(out_file), count_of_files(0), buffer(buff_size * 1024 * 1024*0.25) {
 	pers.reserve(buffer);
 	file_names.reserve(512);
 	division();
