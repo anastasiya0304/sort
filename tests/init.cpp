@@ -10,7 +10,7 @@ SCENARIO("32mb", "[32mb]"){
  bool p=true;
 std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = std::chrono::system_clock::now();
- Sort obj("32","out",17);
+ Sort obj("32.txt","out",17);
  end = std::chrono::system_clock::now();
 	cout <<"32MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
  
@@ -21,7 +21,7 @@ SCENARIO("15mb", "[15mb]"){
  bool p=true;
 std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = std::chrono::system_clock::now();
-Sort obj("15","out2",4);
+Sort obj("15.txt","out2",4);
  end = std::chrono::system_clock::now();
 	cout <<"15MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
  
@@ -32,7 +32,7 @@ SCENARIO("8mb", "[8mb]"){
 bool p=true;
 std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = std::chrono::system_clock::now();
-  Sort obj("8","out8",1);
+  Sort obj("8.txt","out8",1);
  end = std::chrono::system_clock::now();
 	cout <<"8MB- " <<floor((end - start).count()/1000000000) <<" seconds"<< endl;
  
