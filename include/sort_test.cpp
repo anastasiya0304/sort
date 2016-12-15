@@ -131,7 +131,7 @@ inline auto Sort::file_sort()->void {
 
 
 
-inline auto S::division()->void {
+inline auto Sort::division()->void {
 size_t i(0);
 person hmn;
 ifstream file(s_in, ios::binary);
