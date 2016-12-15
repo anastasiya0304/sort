@@ -2,150 +2,158 @@
 #include <fstream> 
 #include <string> 
 #include <vector> 
-#include <locale> 
 #include <iterator> 
 #include <algorithm> 
-#include <cstdio> 
 #include <queue> 
-
+#include <memory>
 using namespace std;
 
-struct A {
-public:
-	ifstream *f;
-	string str;
-	A(const string& s, ifstream* f_) : str(s), f(f_) {}
-	bool operator < (const A& s) const
+struct person {
+	string surname, name;
+	short age;
+	size_t size() const
 	{
-		return (str > s.str);
+		return (surname.capacity()+name.capacity()+ sizeof(age)+2*sizeof(" "));
 	}
 };
 
-class B {
+bool operator <(const person& s1, const person& s2)
+{
+	return (s1.name < s2.name);
+}
+
+bool operator >(const person& s1, const person& s2)
+{
+	return (s1.name > s2.name);
+}
+
+istream & operator>>(istream & in, person & s)
+{
+	in >> s.surname >> s.name >> s.age;
+	return in;
+}
+ostream & operator<<(ostream & out, person const & s)
+{
+	out << s.surname << " " << s.name << " "  << s.age<<"\n";
+	return out;
+}
+
+
+
+struct S {
 public:
-	B(string name_main_file, string out_file, size_t buff_size);
+	ifstream *f;
+	person s;
+	S(const person& s_, ifstream* f_) : s(s_), f(f_) {}
+};
+
+bool operator < (const S& s1, const S& s2)
+{
+	return (s1.s > s2.s);
+}
+
+
+class Sort {
+public:
+	Sort (string name_main_file, string out_file, size_t buff_size);
 	auto division()->void;
-	auto file_size(string name_file)->size_t;
 	auto make_file(string name_file)->void;
 	auto file_sort()->void;
-	auto remove_temp_files()->void;
-	~B();
+	~Sort();
 private:
-	fstream file;
-	size_t buffer, count_of_files, closed_files;
-	vector<string> lines;
+	string s_out, s_in;
+	size_t count_of_files;
 	vector<string> file_names;
-	priority_queue<A> end_sorting;
+	vector<person> pers;
+	uint_fast64_t buffer;
 };
 
 
 
-inline B::~B() {
+inline Sort::~Sort() 
+{ 
 	file_names.clear();
 }
 
-inline B::B(string name_main_file, string out_file, size_t buff_size) :s_in(name_main_file), s_out(out_file), count_of_files(0), buffer(buff_size * 1024 * 1024*0.3) {
+inline Sort::Sort(string name_main_file, string out_file, size_t buff_size) :s_in(name_main_file), s_out(out_file), count_of_files(0), buffer(buff_size * 1024 * 1024*0.35) {
 	pers.reserve(buffer);
 	file_names.reserve(512);
 	division();
 };
 
-
-inline auto B::make_file(string name_file)->void {
+inline auto Sort::make_file(string name_file)->void {
 	file_names.push_back(name_file);
-	std::sort(lines.begin(), lines.end());
-	ofstream temp(name_file);
-	for (auto i : lines)
-	{
-		temp << i;
-		if (i != *(--lines.end())) temp << endl;
-	}
+	std::sort(pers.begin(), pers.end());
+	ofstream temp(name_file, ios::binary);
+	for (auto i : pers) if (i.surname != "") temp << i ;
 	temp.close();
-	lines.clear();
-}
-
-inline auto B::file_size(string name_file)->size_t {
-	long fsize;
-	ifstream temp(name_file);
-	temp.seekg(0, ios::end);
-	fsize = temp.tellg();
-	temp.close();
-	return fsize;
-}
-
-
-
-inline auto B::remove_temp_files()->void {
-	for (int i = 0; i < file_names.size(); ++i) {
-		if (remove(file_names[i].c_str()) == -1) {
-			throw;
-		}
-		else {
-			cout << "Gj";
-		}
-	}
-
+	pers.clear();
 }
 
 
 
 
-inline auto B::file_sort()->void {
-	ofstream f12("out.txt");
-	
-	string str;
+
+inline auto Sort::file_sort()->void {
+	priority_queue<S> end_sorting;
+
 	for (int i = 0; i < count_of_files; ++i) {
-		ifstream* f_ = new ifstream(file_names[i]);
-		getline(*f_, str);
-		A ff(str, f_);
+		ifstream* f_ = new ifstream(file_names[i], ios::binary);
+		person temp_s;
+		*f_ >> temp_s;
+		S ff(temp_s, f_);
 		end_sorting.push(ff);
 	}
-	
+
+	ofstream f12(s_out, ios::binary);
 	while (!end_sorting.empty()) {
-		A ff = end_sorting.top();
+		S ff = end_sorting.top();
 		end_sorting.pop();
-		if (ff.str != "") f12 << ff.str << endl;
+		if (ff.s.surname != "") f12 << ff.s << endl;
 
 		if (!(*ff.f).eof())
 		{
-			getline(*ff.f, ff.str);
+			*ff.f >> ff.s;
 			end_sorting.push(ff);
 		}
-		else
-		{
+		else {
 			(*(ff.f)).close();
 		}
 	}
 	f12.close();
-	remove_temp_files();
-	
+
+
+	for (int i = 0; i < file_names.size(); ++i) {
+		remove(file_names[i].c_str());
+	}
+
 }
 
 
-inline auto B::division()->void {
-	string line_of_file;
-	size_t temp_size_files = 0;
-	while (!file.eof()) {
-		getline(file, line_of_file);
-		temp_size_files += line_of_file.size();
 
-
-		if (temp_size_files <= buffer) {
-			lines.push_back(line_of_file);
+inline auto S::division()->void {
+size_t i(0);
+person hmn;
+ifstream file(s_in, ios::binary);
+while (!file.eof()) 
+{
+file >> hmn;
+i += hmn.size();
+		if (i<buffer) 
+		{
+			pers.push_back(hmn);
 		}
 		else {
 			count_of_files++;
-			make_file(to_string(count_of_files) + ".txt");
-			lines.push_back(line_of_file);
-			temp_size_files = line_of_file.size();
+			make_file(to_string(count_of_files));
+			pers.push_back(hmn);
+			i = hmn.size();
 		}
 	}
 	file.close();
-
-	if (lines.size()) {
+	if (!pers.empty()) {
 		count_of_files++;
-		make_file(to_string(count_of_files) + ".txt");
+		make_file(to_string(count_of_files));
 	}
-
 	file_sort();
 }
